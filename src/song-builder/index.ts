@@ -3,18 +3,53 @@ import { SongTree, SongNode, SongTransformationCollection } from '../song-tree'
 // stub for now.
 // TODO: Make this function actually useful.
 export function generateSong() : SongTree {
-    let t1 = new SongTransformationCollection(3, 2, 4, 2);
-    let t2 = new SongTransformationCollection(3, 2, 4, 2);
-    let t3 = new SongTransformationCollection(3, 2, 4, 2);
+  let t0 = new SongTransformationCollection(0, 1, 0, 1);
+  let t1 = new SongTransformationCollection(0, 1, 0, 1);
+  let t2 = new SongTransformationCollection(3, 2, 6, 1);
 
-    let s1 = new SongNode(t1);
-    let s2 = new SongNode(t2);
-    let s3 = new SongNode(t3);
+  let t3 = new SongTransformationCollection(1, 4, 0, 1);
+  let t4 = new SongTransformationCollection(2, 4, 6, 1);
+  let t5 = new SongTransformationCollection(3, 4, 0, 1);
 
-    s1.addChild(s2);
-    s2.addChild(s3);
+  let t6 = new SongTransformationCollection(1, 4, 0, 1);
+  let t7 = new SongTransformationCollection(2, 4, 6, 1);
+  let t8 = new SongTransformationCollection(3, 4, 0, 1);
 
-    let tree = new SongTree(s1);
+  let s0 = new SongNode(t0);
 
-    return tree;
+  let s1 = new SongNode(t1);
+  let s2 = new SongNode(t2);
+
+  let s3 = new SongNode(t3);
+  let s4 = new SongNode(t4);
+  let s5 = new SongNode(t5);
+
+  let s6 = new SongNode(t3);
+  let s7 = new SongNode(t4);
+  let s8 = new SongNode(t5);
+
+  s0.duration = 1;
+  s1.duration = 1;
+  s2.duration = 1;
+  s3.duration = 1;
+  s4.duration = 1;
+  s5.duration = 1;
+  s6.duration = 1;
+  s7.duration = 1;
+  s8.duration = 1;
+
+  s0.addChild(s1);
+  s0.addChild(s2);
+
+  s1.addChild(s3);
+  s1.addChild(s4);
+  s1.addChild(s5);
+
+  s2.addChild(s6);
+  s2.addChild(s7);
+  s2.addChild(s8);
+
+  let tree = new SongTree(s0);
+
+  return tree;
 }

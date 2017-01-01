@@ -14,8 +14,9 @@ export abstract class Transformation<T> {
    * Given the stack of transformations from the root node to this node, this
    * will return the absolute value of the value.
    */
-  absolute(stack: Transformation<T>[]): T {
-    let value = this.identityValue;
+  absolute(stack: Transformation<T>[], initialValue: T = this.identityValue) :
+   T {
+    let value = initialValue;
 
     for (let i = stack.length - 1; i >= 0; i--) {
       value = stack[i].transform(value);
