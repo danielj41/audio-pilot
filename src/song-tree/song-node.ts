@@ -1,5 +1,5 @@
 import { SongTransformationCollection } from './song-transformation-collection'
-import { Duration } from './time-transformation'
+import { Time, Duration } from './time-transformation'
 
 /**
  * Represents one node of a SongTree.
@@ -7,10 +7,6 @@ import { Duration } from './time-transformation'
 export class SongNode {
   children: SongNode[];
   duration: Duration;
-
-  // TODO: playing a song shouldn't break its data structure representation,
-  // so store this boolean somewhere else.
-  played: boolean = false;
 
   constructor(public transformations: SongTransformationCollection) {
     this.children = [];
@@ -20,7 +16,7 @@ export class SongNode {
    * TODO: Make immutable methods so that we can "reuse" parts of a song
    * without breaking the original part.
    */
-  addChild(songNode: SongNode) {
+  addChild(songNode: SongNode) : void {
     this.children.push(songNode);
   }
 }

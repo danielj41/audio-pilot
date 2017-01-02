@@ -1,4 +1,4 @@
 import { generateSong } from '../src/song-builder'
-import { playSong } from '../src/song-player'
+import { SongPlayer } from '../src/song-player'
 
-playSong(generateSong());
+(new SongPlayer()).playSong(generateSong());

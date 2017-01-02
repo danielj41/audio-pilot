@@ -1,11 +1,25 @@
+import { Steps, Time } from '../song-tree'
+import { Frequency, stepsToFrequency } from './frequency'
+
 export class Audio {
   public context: AudioContext;
+  public baseFrequency: Frequency = 440;
+  public baseStepsInOctave: Steps = 12;
+  public scheduleAhead: number = 0.2;
 
   constructor() {
     this.context = new AudioContext();
   }
 
-  playNote(start: number, stop: number, frequency: number) {
+  shouldSchedule(start: Time) : boolean {
+    return this.context.currentTime > start - this.scheduleAhead &&
+     this.context.currentTime < start;
+  }
+
+  scheduleNote(start: Time, stop: Time, steps: Steps) {
+    let frequency = stepsToFrequency(this.baseFrequency,
+     steps / this.baseStepsInOctave);
+
     let oscillator = this.context.createOscillator();
     let gain = this.context.createGain();
 
@@ -19,7 +33,7 @@ export class Audio {
 
     console.log(start, stop, frequency);
 
-    oscillator.addEventListener('onended', () => {
+    oscillator.addEventListener('ended', () => {
       oscillator.disconnect();
       console.log('disconnected');
     });
