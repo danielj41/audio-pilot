@@ -10,10 +10,15 @@ export class SongPlayer {
 
   playSong(song: SongTree) : void {
     let audio = new Audio();
-    let playTreeRoot = new PlayNode(song.root, null);
+    let playTree : PlayNode | null = new PlayNode(song.root, null);
 
-    setInterval(() : void => {
-      playTreeRoot.traverse(new SongTransformationStack(), audio);
+    let interval = setInterval(() : void => {
+      if (playTree !== null) {
+        playTree = playTree.traverse(new SongTransformationStack(), audio);
+      } else {
+        clearInterval(interval);
+        console.log('song ended!');
+      }
     }, this.period);
   }
 }
