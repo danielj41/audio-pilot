@@ -3,18 +3,16 @@
  * transformations from each parent node.
  */
 export class TransformationStack<T> {
-  stack: T[];
+  private stackArray: T[];
 
   constructor() {
-    this.stack = [];
+    this.stackArray = [];
   }
 
-  push(transformationCollection: T) : void {
-    this.stack.push(transformationCollection);
-  }
-
-  pop() : void {
-    this.stack.pop();
+  add(newElement: T) : TransformationStack<T> {
+    let newStack = new TransformationStack<T>();
+    newStack.stackArray = this.stackArray.concat(newElement);
+    return newStack;
   }
 
   /**
@@ -23,7 +21,8 @@ export class TransformationStack<T> {
    * `stack`, which is an array of SongTransformationCollections.
    */
   getSlice<K extends keyof T>(sliceName: K) : T[K][] {
-    return this.stack.map(function(transformations: T, index, array): T[K] {
+    return this.stackArray.map(function(transformations: T, index, array) :
+     T[K] {
       return transformations[sliceName];
     });
   }

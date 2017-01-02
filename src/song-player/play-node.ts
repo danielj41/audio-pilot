@@ -1,4 +1,4 @@
-import { SongTree, SongNode } from '../song-tree'
+import { SongTree, SongNode, SongTransformationCollection } from '../song-tree'
 import { SongTransformationStack } from './song-transformation-stack'
 import { Audio } from './web-audio'
 
@@ -10,9 +10,9 @@ export class PlayNode {
     this.children = songNode.children.map((node) => new PlayNode(node, this));
   }
 
-  traverse(stack: SongTransformationStack, audio: Audio) :
+  traverse(parentStack: SongTransformationStack, audio: Audio) :
    void {
-    stack.push(this.songNode.transformations);
+    let stack = parentStack.add(this.songNode.transformations);
 
     let start = this.songNode.transformations.time.absolute(
      stack.getSlice('time'));
@@ -31,7 +31,5 @@ export class PlayNode {
     for (let i in this.children) {
       this.children[i].traverse(stack, audio);
     }
-
-    stack.pop();
   }
 }

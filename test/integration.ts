@@ -15,9 +15,9 @@ describe('integration test', function() {
       let b = new SongTransformationCollection(3, 2, 4, 2);
       let c = new SongTransformationCollection(3, 2, 4, 2);
       let stack = new SongTransformationStack();
-      stack.push(a);
-      stack.push(b);
-      stack.push(c);
+      stack = stack.add(a);
+      stack = stack.add(b);
+      stack = stack.add(c);
       assert.equal(b.time.absolute(stack.getSlice('time')), 5.25);
       assert.equal(b.time.absolute(stack.getSlice('steps')), 7);
     });
