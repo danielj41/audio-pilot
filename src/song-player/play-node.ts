@@ -17,11 +17,18 @@ export class PlayNode {
    PlayNode | null {
     let stack = parentStack.add(this.songNode.transformations);
 
-    if (this.children.length > 0) {
-      return this.traverseChildren(stack, audio);
-    } else {
-      return this.traverseLeaf(stack, audio);
+    let start = this.songNode.transformations.time.absolute(
+     stack.getSlice('time'));
+
+    if (audio.shouldSchedule(start)) {
+      if (this.children.length > 0) {
+        return this.traverseChildren(stack, audio);
+      } else {
+        return this.traverseLeaf(stack, audio);
+      }
     }
+
+    return this;
   }
 
   traverseChildren(stack: SongTransformationStack, audio: Audio) :
@@ -55,16 +62,13 @@ export class PlayNode {
     let start = this.songNode.transformations.time.absolute(
      stack.getSlice('time'));
 
-    if (audio.shouldSchedule(start)) {
-      let end = this.songNode.transformations.time.absolute(
-       stack.getSlice('time'), this.songNode.duration);
-      let steps = this.songNode.transformations.time.absolute(
-       stack.getSlice('steps'));
+    let end = this.songNode.transformations.time.absolute(
+     stack.getSlice('time'), this.songNode.duration);
+    let steps = this.songNode.transformations.time.absolute(
+     stack.getSlice('steps'));
 
-      audio.scheduleNote(start, end, steps);
-      return null;
-    }
+    audio.scheduleNote(start, end, steps);
 
-    return this;
+    return null;
   }
 }

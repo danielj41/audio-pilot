@@ -12,8 +12,7 @@ export class Audio {
   }
 
   shouldSchedule(start: Time) : boolean {
-    return this.context.currentTime > start - this.scheduleAhead &&
-     this.context.currentTime < start;
+    return this.context.currentTime > start - this.scheduleAhead;
   }
 
   scheduleNote(start: Time, stop: Time, steps: Steps) {
