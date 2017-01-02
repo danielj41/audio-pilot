@@ -9,6 +9,9 @@ export class TransformationStack<T> {
     this.stackArray = [];
   }
 
+  /**
+   * Return a new stack with an additional element on the top.
+   */
   add(newElement: T) : TransformationStack<T> {
     let newStack = new TransformationStack<T>();
     newStack.stackArray = this.stackArray.concat(newElement);

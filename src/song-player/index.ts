@@ -1,24 +1,38 @@
 import { SongTree, SongNode, SongTransformationCollection, Steps }
  from '../song-tree'
 import { SongTransformationStack } from './song-transformation-stack'
-import { Audio } from './web-audio'
+import { Audio } from './audio'
 import { stepsToFrequency, Frequency } from './frequency'
 import { PlayNode } from './play-node'
 
+/**
+ * Plays a song defined by a SongTree.
+ */
 export class SongPlayer {
-  public period: number = 10;
+  /**
+   * How often to traverse the PlayTree in ms. Each time we traverse the tree,
+   * we look for new notes to play in the next few seconds.
+   */
+  public traversePeriod: number = 10;
 
-  playSong(song: SongTree) : void {
+  public playSong(song: SongTree) : void {
     let audio = new Audio();
+
+    // Create a PlayNode representation of the SongTree.
     let playTree : PlayNode | null = new PlayNode(song.root, null);
 
+    // Traverse the tree repeatedly.
     let interval = setInterval(() : void => {
       if (playTree !== null) {
+        // `traverse` will return a new tree after deleting all nodes that have
+        // already been played.
         playTree = playTree.traverse(new SongTransformationStack(), audio);
       } else {
+        // If it returns null, then there are no more nodes to play. That means
+        // that the song must have ended.
         clearInterval(interval);
         console.log('song ended!');
       }
-    }, this.period);
+    }, this.traversePeriod);
   }
 }

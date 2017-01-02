@@ -2,6 +2,13 @@
  * Represents a transformation that should be applied to any child nodes.
  */
 export abstract class Transformation<T> {
+  /**
+   * The value that can be passed to transform() to return the original
+   * parameter used to create the Transformation object.
+   *
+   * For example, a transformation of `value + 3` and an identityValue of 0
+   * would produce `transform(identityValue) == 3`.
+   */
   protected identityValue: T;
 
   /**
@@ -13,6 +20,9 @@ export abstract class Transformation<T> {
   /**
    * Given the stack of transformations from the root node to this node, this
    * will return the absolute value of the value.
+   *
+   * TODO: Move this to a TransformationStack class, it doesn't really belong
+   * here.
    */
   absolute(stack: Transformation<T>[], initialValue: T = this.identityValue) :
    T {
