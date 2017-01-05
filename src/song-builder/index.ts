@@ -12,20 +12,14 @@ export function generateSong() : SongTree {
   let t4 = new SongTransformationCollection(1, 1, 6, 1);
   let t5 = new SongTransformationCollection(2, 1, 0, 1);
 
-  let s0 = new SongNode(t0);
+  let s0 = new SongNode(t0, 1);
 
-  let s1 = new SongNode(t1);
-  let s2 = new SongNode(t2);
+  let s1 = new SongNode(t1, 1);
+  let s2 = new SongNode(t2, 1);
 
-  let s3 = new SongNode(t3);
-  let s4 = new SongNode(t4);
-  let s5 = new SongNode(t5);
-
-  s1.duration = 0.5;
-  s2.duration = 0.5;
-  s3.duration = 1;
-  s4.duration = 1;
-  s5.duration = 1;
+  let s3 = new SongNode(t3, 1);
+  let s4 = new SongNode(t4, 1);
+  let s5 = new SongNode(t5, 1);
 
   s0.addChild(s1);
   s0.addChild(s2);
