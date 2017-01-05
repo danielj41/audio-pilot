@@ -24,7 +24,9 @@ export class Audio {
   private scheduleAhead: number = 0.2;
 
   constructor() {
-    this.context = new AudioContext();
+    if (typeof AudioContext !== 'undefined') {
+      this.context = new AudioContext();
+    }
   }
 
   /**

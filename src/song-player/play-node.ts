@@ -6,7 +6,7 @@ import { Audio } from './audio'
  * A wrapper around a SongNode that has methods for actually playing notes.
  */
 export class PlayNode {
-  private children: PlayNode[];
+  children: PlayNode[];
 
   /**
    * Construct a PlayNode for a SongNode. If `children` is null, then child
