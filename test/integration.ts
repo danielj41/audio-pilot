@@ -4,7 +4,7 @@ import { SongTransformationStack }
  from '../src/song-player/song-transformation-stack'
 
 import 'mocha'
-import assert = require('assert');
+import { assert } from 'chai'
 
 // TODO: Make this test more useful and add unit tests later. It pulls a lot
 // of dependencies across directories, which seems a bit unreliable.

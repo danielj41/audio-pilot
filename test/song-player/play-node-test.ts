@@ -5,8 +5,8 @@ import { SongTransformationStack }
 import { Audio } from '../../src/song-player/audio'
 
 import 'mocha'
-import assert = require('assert');
-import * as TypeMoq from 'typemoq';
+import { assert } from 'chai'
+import * as TypeMoq from 'typemoq'
 
 describe('PlayNode', () => {
   describe('traverse', () => {
