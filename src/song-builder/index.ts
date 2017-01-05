@@ -21,6 +21,8 @@ export function generateSong() : SongTree {
   let s4 = new SongNode(t4);
   let s5 = new SongNode(t5);
 
+  s1.duration = 0.5;
+  s2.duration = 0.5;
   s3.duration = 1;
   s4.duration = 1;
   s5.duration = 1;

@@ -7,17 +7,23 @@ import { Audio } from './audio'
  */
 export class PlayNode {
   children: PlayNode[];
+  scheduled: boolean;
 
   /**
    * Construct a PlayNode for a SongNode. If `children` is null, then child
    * PlayNodes will be recursively constructed to match the SongNode structure.
    */
-  constructor(public songNode: SongNode, children: PlayNode[] | null) {
+  constructor(public songNode: SongNode, children: PlayNode[] | null,
+   scheduled: boolean = false) {
     if (children === null) {
-      this.children = songNode.children.map((node) => new PlayNode(node, null));
+      this.children = songNode.children.map((node) => {
+        return new PlayNode(node, null, scheduled);
+      });
     } else {
       this.children = children;
     }
+
+    this.scheduled = scheduled;
   }
 
   /**
@@ -36,13 +42,17 @@ export class PlayNode {
      stack.getSlice('time'));
 
     if (audio.shouldSchedule(start)) {
+      let newNode: PlayNode = this;
+
       // If the absolute start time is soon, then schedule the note to play
       // soon.
-      this.scheduleToPlay(stack, audio);
+      if (!this.scheduled) {
+        newNode = this.scheduleToPlay(stack, audio);
+      }
 
       // Also, check if any children need to be scheduled soon. Return the
       // new PlayNode with new children.
-      return this.traverseChildren(stack, audio);
+      return newNode.traverseChildren(stack, audio);
     } else {
       // If we're not playing this node soon, then just return this part of the
       // tree without any modifications.
@@ -68,7 +78,7 @@ export class PlayNode {
     }
 
     if (newChildren.length > 0) {
-      return new PlayNode(this.songNode, newChildren);
+      return new PlayNode(this.songNode, newChildren, true);
     } else {
       return null;
     }
@@ -77,14 +87,8 @@ export class PlayNode {
   /**
    * Add the node to the WebAudio API.
    */
-  private scheduleToPlay(stack: SongTransformationStack, audio: Audio) : void {
-    // Right now, we just play leaf nodes.
-    //
-    // TODO: We'll want to play non-leaf nodes at some point.
-    if (this.children.length > 0) {
-      return;
-    }
-
+  private scheduleToPlay(stack: SongTransformationStack, audio: Audio) :
+   PlayNode {
     // TODO: Make it one function call to get all of the absolute transforms.
     let start = this.songNode.transformations.time.absolute(
      stack.getSlice('time'));
@@ -94,5 +98,7 @@ export class PlayNode {
      stack.getSlice('steps'));
 
     audio.scheduleNote(start, end, steps);
+
+    return new PlayNode(this.songNode, this.children, true);
   }
 }
