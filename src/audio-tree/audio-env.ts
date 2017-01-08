@@ -36,33 +36,4 @@ export class AudioEnv {
   public shouldSchedule(start: Time) : boolean {
     return this.context.currentTime > start - this.scheduleAhead;
   }
-
-  /**
-   * Creates the AudioNodes necessary for a SongNode and schedules them to play
-   * at `start` time.
-   *
-   * TODO: Generalize this method.
-   */
-  scheduleNote(start: Time, stop: Time, steps: Steps) : void {
-    let frequency = stepsToFrequency(this.baseFrequency,
-     steps / this.baseStepsInOctave);
-
-    let oscillator = this.context.createOscillator();
-    let gain = this.context.createGain();
-
-    oscillator.connect(gain);
-    oscillator.frequency.value = frequency;
-    oscillator.start(start);
-    oscillator.stop(stop);
-
-    gain.gain.value = 0.5;
-    gain.connect(this.context.destination);
-
-    console.log(start, stop, frequency);
-
-    oscillator.addEventListener('ended', () => {
-      oscillator.disconnect();
-      console.log('disconnected');
-    });
-  }
 }

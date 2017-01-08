@@ -2,7 +2,7 @@ import { NoteSongNode, SongTransformationCollection } from '../../src/song-tree'
 import { PlayNode } from '../../src/song-player/play-node'
 import { SongTransformationStack }
  from '../../src/song-player/song-transformation-stack'
-import { AudioEnv } from '../../src/audio-tree'
+import { AudioEnv, AudioNodeChain } from '../../src/audio-tree'
 
 import 'mocha'
 import { assert } from 'chai'
@@ -12,10 +12,9 @@ describe('PlayNode', () => {
   describe('traverse', () => {
     it('should return a new PlayNode tree', () => {
       // Create a small tree.
-      // TODO: Mock SongNode so that this is more of a unit test.
-      let root = new NoteSongNode(new SongTransformationCollection(0));
-      let node1 = new NoteSongNode(new SongTransformationCollection(0));
-      let node2 = new NoteSongNode(new SongTransformationCollection(0));
+      let root = getSongNodeMock();
+      let node1 = getSongNodeMock();
+      let node2 = getSongNodeMock();
 
       root.addChild(node1);
       root.addChild(node2);
@@ -48,6 +47,25 @@ describe('PlayNode', () => {
 });
 
 /**
+ * Return a SongNode object that returns a mocked no-op AudioNodeChain object.
+ */
+function getSongNodeMock() : NoteSongNode {
+  let audioNodeChainMock: TypeMoq.IMock<AudioNodeChain> =
+   TypeMoq.Mock.ofInstance(new AudioNodeChain(<any>1));
+
+  audioNodeChainMock.setup(x => x.schedule(TypeMoq.It.isAny(),
+                                           TypeMoq.It.isAny(),
+                                           TypeMoq.It.isAny(),
+                                           TypeMoq.It.isAny(),
+                                           TypeMoq.It.isAny()));
+
+  let songNode = new NoteSongNode(new SongTransformationCollection(0));
+  songNode.getAudioNodeChain = () => audioNodeChainMock.object;
+
+  return songNode;
+}
+
+/**
  * Returns a mocked Audio object that returns a sequence of booleans for
  * `shouldSchedule`. All other methods are no-ops.
  * Example:
@@ -64,11 +82,6 @@ function getAudioMock(returnValues: boolean[]) : AudioEnv {
     audioMock.setup(x => x.shouldSchedule(TypeMoq.It.isAnyNumber()))
              .returns(() => value);
   }
-
-  audioMock.setup(x => x.scheduleNote(TypeMoq.It.isAnyNumber(),
-                                      TypeMoq.It.isAnyNumber(),
-                                      TypeMoq.It.isAnyNumber()))
-           .returns(() => {});
 
   return audioMock.object;
 }

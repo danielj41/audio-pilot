@@ -1,29 +1,29 @@
 import { SongTree, SongNode, SongTransformationCollection } from '../song-tree'
 import { SongTransformationStack } from './song-transformation-stack'
-import { AudioEnv } from '../audio-tree'
+import { AudioEnv, AudioNodeChain } from '../audio-tree'
 
 /**
  * A wrapper around a SongNode that has methods for actually playing notes.
  */
 export class PlayNode {
   children: PlayNode[];
-  scheduled: boolean;
+  audioNodes: AudioNodeChain | null;
 
   /**
    * Construct a PlayNode for a SongNode. If `children` is null, then child
    * PlayNodes will be recursively constructed to match the SongNode structure.
    */
   constructor(public songNode: SongNode, children: PlayNode[] | null,
-   scheduled: boolean = false) {
+   audioNodes: AudioNodeChain | null = null) {
     if (children === null) {
       this.children = songNode.children.map((node) => {
-        return new PlayNode(node, null, scheduled);
+        return new PlayNode(node, null);
       });
     } else {
       this.children = children;
     }
 
-    this.scheduled = scheduled;
+    this.audioNodes = audioNodes;
   }
 
   /**
@@ -32,7 +32,8 @@ export class PlayNode {
    * any already-played child nodes. Returns null if this node and all of its
    * children have been played.
    */
-  public traverse(parentStack: SongTransformationStack, audio: AudioEnv) :
+  public traverse(parentStack: SongTransformationStack, audio: AudioEnv,
+   parentAudioNodes: AudioNodeChain | null = null) :
    PlayNode | null {
     // Push any new transformations onto the stack.
     let stack = parentStack.add(this.songNode.transformations);
@@ -46,8 +47,8 @@ export class PlayNode {
 
       // If the absolute start time is soon, then schedule the note to play
       // soon.
-      if (!this.scheduled) {
-        newNode = this.scheduleToPlay(stack, audio);
+      if (!this.audioNodes) {
+        newNode = this.scheduleToPlay(stack, audio, parentAudioNodes);
       }
 
       // Also, check if any children need to be scheduled soon. Return the
@@ -70,7 +71,7 @@ export class PlayNode {
     let newChildren: PlayNode[] = [];
 
     for (let i in this.children) {
-      let newChild = this.children[i].traverse(stack, audio);
+      let newChild = this.children[i].traverse(stack, audio, this.audioNodes);
 
       if (newChild !== null) {
         newChildren.push(newChild);
@@ -78,7 +79,7 @@ export class PlayNode {
     }
 
     if (newChildren.length > 0) {
-      return new PlayNode(this.songNode, newChildren, true);
+      return new PlayNode(this.songNode, newChildren, this.audioNodes);
     } else {
       return null;
     }
@@ -87,7 +88,8 @@ export class PlayNode {
   /**
    * Add the node to the WebAudio API.
    */
-  private scheduleToPlay(stack: SongTransformationStack, audio: AudioEnv) :
+  private scheduleToPlay(stack: SongTransformationStack, audio: AudioEnv,
+   parentAudioNodes: AudioNodeChain | null) :
    PlayNode {
     // TODO: Make it one function call to get all of the absolute transforms.
     let start = this.songNode.transformations.time.absolute(
@@ -97,8 +99,9 @@ export class PlayNode {
     let steps = this.songNode.transformations.time.absolute(
      stack.getSlice('steps'));
 
-    audio.scheduleNote(start, end, steps);
+    let audioNodes = this.songNode.getAudioNodeChain(audio.context);
+    audioNodes.schedule(audio, start, end, steps, parentAudioNodes);
 
-    return new PlayNode(this.songNode, this.children, true);
+    return new PlayNode(this.songNode, this.children, audioNodes);
   }
 }

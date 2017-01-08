@@ -14,19 +14,32 @@ export class AudioNodeChain {
     this.oscillators = oscillators;
   }
 
-  schedule(env: AudioEnv, start: Time, end: Time, steps: Steps, destination: AudioNode) {
+  schedule(env: AudioEnv, start: Time, end: Time, steps: Steps,
+   destination: AudioNode | AudioNodeChain | null) : void {
+    if (destination === null) {
+      destination = env.context.destination;
+    } else if (destination instanceof AudioNodeChain) {
+      destination = destination.tail;
+    }
+
     this.head.connect(destination);
 
-    setTimeout(this.head.disconnect.bind(this.head),
-     (end - this.head.context.currentTime) * 1000);
+    setTimeout(() => {
+      this.head.disconnect();
+      console.log("disconnected node");
+    }, (end - this.head.context.currentTime) * 1000);
 
-     for (let i in this.oscillators) {
-       let osc = this.oscillators[i];
+    let frequency = stepsToFrequency(env.baseFrequency,
+     steps / env.baseStepsInOctave);
 
-       osc.frequency.value = stepsToFrequency(env.baseFrequency,
-        steps / env.baseStepsInOctave);
-       osc.start(start);
-       osc.stop(end);
-     }
+    for (let i in this.oscillators) {
+      let osc = this.oscillators[i];
+
+      osc.frequency.value = frequency;
+      osc.start(start);
+      osc.stop(end);
+    }
+
+    console.log("time: " + start + "-" + end + " @ " + frequency + " Hz");
   }
 }

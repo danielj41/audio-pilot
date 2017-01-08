@@ -7,7 +7,7 @@ export class NoteSongNode extends SongNode {
     let gain = context.createGain();
 
     osc.connect(gain);
-    gain.gain.value = 0.5;
+    gain.gain.value = 1.0;
 
     return new AudioNodeChain(gain, gain, [osc]);
   }
