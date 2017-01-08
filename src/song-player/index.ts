@@ -1,8 +1,7 @@
 import { SongTree, SongNode, SongTransformationCollection, Steps }
  from '../song-tree'
 import { SongTransformationStack } from './song-transformation-stack'
-import { Audio } from './audio'
-import { stepsToFrequency, Frequency } from './frequency'
+import { Audio } from '../audio-tree'
 import { PlayNode } from './play-node'
 
 /**

@@ -1,6 +1,6 @@
 import { SongTree, SongNode, SongTransformationCollection } from '../song-tree'
 import { SongTransformationStack } from './song-transformation-stack'
-import { Audio } from './audio'
+import { Audio } from '../audio-tree'
 
 /**
  * A wrapper around a SongNode that has methods for actually playing notes.

@@ -2,7 +2,7 @@ import { SongNode, SongTransformationCollection } from '../../src/song-tree'
 import { PlayNode } from '../../src/song-player/play-node'
 import { SongTransformationStack }
  from '../../src/song-player/song-transformation-stack'
-import { Audio } from '../../src/song-player/audio'
+import { Audio } from '../../src/audio-tree'
 
 import 'mocha'
 import { assert } from 'chai'
