@@ -4,25 +4,32 @@ import { AudioEnv } from './audio-env'
 
 export class AudioNodeChain {
   private head: AudioNode;
-  private tail: AudioNode;
+  private tail: AudioNode | AudioParam;
   private oscillators: OscillatorNode[];
 
-  constructor(head: AudioNode, tail: AudioNode | null = null, oscillators:
-   OscillatorNode[] = []) {
+  constructor(head: AudioNode, tail: AudioNode | AudioParam | null = null,
+   oscillators: OscillatorNode[] = []) {
     this.head = head;
     this.tail = tail ? tail : head;
     this.oscillators = oscillators;
   }
 
   schedule(env: AudioEnv, start: Time, end: Time, steps: Steps,
-   destination: AudioNode | AudioNodeChain | null) : void {
+   destination: AudioNode | AudioParam | AudioNodeChain | null) : void {
     if (destination === null) {
       destination = env.context.destination;
     } else if (destination instanceof AudioNodeChain) {
       destination = destination.tail;
     }
 
-    this.head.connect(destination);
+    if (destination instanceof AudioNode) {
+      this.head.connect(destination);
+    } else if (destination instanceof AudioParam) {
+      // Not sure why typescript doesn't like this.
+      // The connect function should accept AudioNode | AudioParam according to
+      // https://developer.mozilla.org/en-US/docs/Web/API/AudioNode
+      this.head.connect(<any>destination);
+    }
 
     setTimeout(() => {
       this.head.disconnect();
