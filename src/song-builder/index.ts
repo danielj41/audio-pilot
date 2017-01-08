@@ -21,9 +21,6 @@ export function generateSong() : SongTree {
   let s4 = new SongNode(t4, 1);
   let s5 = new SongNode(t5, 1);
 
-  s0.addChild(s1);
-  s0.addChild(s2);
-
   s1.addChild(s3);
   s1.addChild(s4);
   s1.addChild(s5);
@@ -31,6 +28,9 @@ export function generateSong() : SongTree {
   s2.addChild(s3);
   s2.addChild(s4);
   s2.addChild(s5);
+
+  s0.addChild(s1);
+  s0.addChild(s2);
 
   let tree = new SongTree(s0);
 
