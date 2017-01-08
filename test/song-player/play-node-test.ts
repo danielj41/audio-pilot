@@ -2,7 +2,7 @@ import { SongNode, SongTransformationCollection } from '../../src/song-tree'
 import { PlayNode } from '../../src/song-player/play-node'
 import { SongTransformationStack }
  from '../../src/song-player/song-transformation-stack'
-import { Audio } from '../../src/audio-tree'
+import { AudioEnv } from '../../src/audio-tree'
 
 import 'mocha'
 import { assert } from 'chai'
@@ -55,8 +55,9 @@ describe('PlayNode', () => {
  *   a.shouldSchedule(0) // true
  *   a.shouldSchedule(0) // false
  */
-function getAudioMock(returnValues: boolean[]) : Audio {
-  let audioMock: TypeMoq.IMock<Audio> = TypeMoq.Mock.ofInstance(new Audio());
+function getAudioMock(returnValues: boolean[]) : AudioEnv {
+  let audioMock: TypeMoq.IMock<AudioEnv> = TypeMoq.Mock.ofInstance(
+   new AudioEnv());
 
   for (let i in returnValues) {
     let value = returnValues[i];

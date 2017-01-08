@@ -1,6 +1,6 @@
 import { SongTree, SongNode, SongTransformationCollection } from '../song-tree'
 import { SongTransformationStack } from './song-transformation-stack'
-import { Audio } from '../audio-tree'
+import { AudioEnv } from '../audio-tree'
 
 /**
  * A wrapper around a SongNode that has methods for actually playing notes.
@@ -32,7 +32,7 @@ export class PlayNode {
    * any already-played child nodes. Returns null if this node and all of its
    * children have been played.
    */
-  public traverse(parentStack: SongTransformationStack, audio: Audio) :
+  public traverse(parentStack: SongTransformationStack, audio: AudioEnv) :
    PlayNode | null {
     // Push any new transformations onto the stack.
     let stack = parentStack.add(this.songNode.transformations);
@@ -65,7 +65,7 @@ export class PlayNode {
    * play, return a new PlayNode with less children. Return null if this node
    * and all its children are done.
    */
-  private traverseChildren(stack: SongTransformationStack, audio: Audio) :
+  private traverseChildren(stack: SongTransformationStack, audio: AudioEnv) :
    PlayNode | null {
     let newChildren: PlayNode[] = [];
 
@@ -87,7 +87,7 @@ export class PlayNode {
   /**
    * Add the node to the WebAudio API.
    */
-  private scheduleToPlay(stack: SongTransformationStack, audio: Audio) :
+  private scheduleToPlay(stack: SongTransformationStack, audio: AudioEnv) :
    PlayNode {
     // TODO: Make it one function call to get all of the absolute transforms.
     let start = this.songNode.transformations.time.absolute(

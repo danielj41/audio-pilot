@@ -1,7 +1,7 @@
 import { SongTree, SongNode, SongTransformationCollection, Steps }
  from '../song-tree'
 import { SongTransformationStack } from './song-transformation-stack'
-import { Audio } from '../audio-tree'
+import { AudioEnv } from '../audio-tree'
 import { PlayNode } from './play-node'
 
 /**
@@ -15,7 +15,7 @@ export class SongPlayer {
   public traversePeriod: number = 10;
 
   public playSong(song: SongTree) : void {
-    let audio = new Audio();
+    let audio = new AudioEnv();
 
     // Create a PlayNode representation of the SongTree.
     let playTree : PlayNode | null = new PlayNode(song.root, null);
