@@ -1,4 +1,4 @@
-import { SongNode, SongTransformationCollection } from '../../src/song-tree'
+import { NoteSongNode, SongTransformationCollection } from '../../src/song-tree'
 import { PlayNode } from '../../src/song-player/play-node'
 import { SongTransformationStack }
  from '../../src/song-player/song-transformation-stack'
@@ -13,9 +13,9 @@ describe('PlayNode', () => {
     it('should return a new PlayNode tree', () => {
       // Create a small tree.
       // TODO: Mock SongNode so that this is more of a unit test.
-      let root = new SongNode(new SongTransformationCollection(0));
-      let node1 = new SongNode(new SongTransformationCollection(0));
-      let node2 = new SongNode(new SongTransformationCollection(0));
+      let root = new NoteSongNode(new SongTransformationCollection(0));
+      let node1 = new NoteSongNode(new SongTransformationCollection(0));
+      let node2 = new NoteSongNode(new SongTransformationCollection(0));
 
       root.addChild(node1);
       root.addChild(node2);

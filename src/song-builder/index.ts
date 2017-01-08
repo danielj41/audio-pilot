@@ -1,4 +1,5 @@
-import { SongTree, SongNode, SongTransformationCollection } from '../song-tree'
+import { SongTree, NoteSongNode, SongTransformationCollection }
+ from '../song-tree'
 
 // stub for now.
 // TODO: Make this function actually useful.
@@ -12,14 +13,14 @@ export function generateSong() : SongTree {
   let t4 = new SongTransformationCollection(1, 1, 6, 1);
   let t5 = new SongTransformationCollection(2, 1, 0, 1);
 
-  let s0 = new SongNode(t0, 1);
+  let s0 = new NoteSongNode(t0, 1);
 
-  let s1 = new SongNode(t1, 1);
-  let s2 = new SongNode(t2, 1);
+  let s1 = new NoteSongNode(t1, 1);
+  let s2 = new NoteSongNode(t2, 1);
 
-  let s3 = new SongNode(t3, 1);
-  let s4 = new SongNode(t4, 1);
-  let s5 = new SongNode(t5, 1);
+  let s3 = new NoteSongNode(t3, 1);
+  let s4 = new NoteSongNode(t4, 1);
+  let s5 = new NoteSongNode(t5, 1);
 
   s1.addChild(s3);
   s1.addChild(s4);
