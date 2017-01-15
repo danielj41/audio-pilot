@@ -19,7 +19,7 @@ describe('PlayNode', () => {
       root.addChild(node1);
       root.addChild(node2);
 
-      let playTree = new PlayNode(root, null);
+      let playTree = new PlayNode(root);
 
       // Create an audio player that will schedule the first two nodes, but
       // not the third one.
@@ -44,12 +44,32 @@ describe('PlayNode', () => {
       assert.equal(playTree.children[1], playTreeAfter.children[0])
     });
   });
+
+  describe('duration', () => {
+    it('should infer parent durations from children', () => {
+      let root = new NoteSongNode(new SongTransformationCollection(0));
+      let node1 = new NoteSongNode(new SongTransformationCollection(1));
+      let node2 = new NoteSongNode(new SongTransformationCollection(0), 2);
+      let node3 = new NoteSongNode(new SongTransformationCollection(0), 4);
+
+      root.addChild(node1);
+      root.addChild(node2);
+
+      node1.addChild(node3);
+
+      let playTree = new PlayNode(root);
+
+      assert.equal(playTree.duration, 5);
+      assert.equal(playTree.children[0].duration, 4);
+      assert.equal(playTree.children[1].duration, 2);
+    });
+  })
 });
 
 /**
  * Return a SongNode object that returns a mocked no-op AudioNodeChain object.
  */
-function getSongNodeMock() : NoteSongNode {
+function getSongNodeMock(songNode: NoteSongNode | null = null) : NoteSongNode {
   let audioNodeChainMock: TypeMoq.IMock<AudioNodeChain> =
    TypeMoq.Mock.ofInstance(new AudioNodeChain(<any>1));
 
@@ -59,7 +79,7 @@ function getSongNodeMock() : NoteSongNode {
                                            TypeMoq.It.isAny(),
                                            TypeMoq.It.isAny()));
 
-  let songNode = new NoteSongNode(new SongTransformationCollection(0));
+  songNode = songNode || new NoteSongNode(new SongTransformationCollection(0));
   songNode.getAudioNodeChain = () => audioNodeChainMock.object;
 
   return songNode;

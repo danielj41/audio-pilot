@@ -1,4 +1,5 @@
-import { SongTree, SongNode, SongTransformationCollection } from '../song-tree'
+  import { SongTree, SongNode, SongTransformationCollection, Time }
+ from '../song-tree'
 import { SongTransformationStack } from './song-transformation-stack'
 import { AudioEnv, AudioNodeChain } from '../audio-tree'
 
@@ -8,22 +9,48 @@ import { AudioEnv, AudioNodeChain } from '../audio-tree'
 export class PlayNode {
   children: PlayNode[];
   audioNodes: AudioNodeChain | null;
+  duration: Time;
 
   /**
    * Construct a PlayNode for a SongNode. If `children` is null, then child
    * PlayNodes will be recursively constructed to match the SongNode structure.
    */
-  constructor(public songNode: SongNode, children: PlayNode[] | null,
-   audioNodes: AudioNodeChain | null = null) {
-    if (children === null) {
-      this.children = songNode.children.map((node) => {
-        return new PlayNode(node, null);
-      });
-    } else {
-      this.children = children;
-    }
+  constructor(public songNode: SongNode,
+                     children: PlayNode[] | null = null,
+                     duration: Time | null = null,
+                     audioNodes: AudioNodeChain | null = null) {
 
+    this.children = children || this.calculateChildren(songNode);
+    this.duration = duration || this.calculateDuration(this.children, songNode);
     this.audioNodes = audioNodes;
+  }
+
+  /**
+   * Recursively construct children based on our SongNode's children.
+   */
+  private calculateChildren(songNode: SongNode) : PlayNode[] {
+    return songNode.children.map((node) => {
+      return new PlayNode(node);
+    });
+  }
+
+  /**
+   * Infer duration from our children's durations.
+   */
+  private calculateDuration(children: PlayNode[], songNode: SongNode) : Time {
+    if (this.isLeaf(children)) {
+      // Leafs have explicit durations.
+      return songNode.duration;
+    } else {
+      // Infer our duration from our last child's end time, relative to this.
+      return Math.max.apply(Math, children.map((child) => {
+        return child.songNode.transformations.time.transform(child.duration);
+      }));
+    }
+  }
+
+  public isLeaf(children: PlayNode[] | null = null) : boolean {
+    return (children || this.children).length === 0;
   }
 
   /**
@@ -79,7 +106,8 @@ export class PlayNode {
     }
 
     if (newChildren.length > 0) {
-      return new PlayNode(this.songNode, newChildren, this.audioNodes);
+      return new PlayNode(this.songNode, newChildren, this.duration,
+       this.audioNodes);
     } else {
       return null;
     }
@@ -95,13 +123,14 @@ export class PlayNode {
     let start = this.songNode.transformations.time.absolute(
      stack.getSlice('time'));
     let end = this.songNode.transformations.time.absolute(
-     stack.getSlice('time'), this.songNode.duration);
+     stack.getSlice('time'), this.duration);
     let steps = this.songNode.transformations.time.absolute(
      stack.getSlice('steps'));
 
     let audioNodes = this.songNode.getAudioNodeChain(audio.context);
     audioNodes.schedule(audio, start, end, steps, parentAudioNodes);
 
-    return new PlayNode(this.songNode, this.children, audioNodes);
+    return new PlayNode(this.songNode, this.children, this.duration,
+     audioNodes);
   }
 }

@@ -18,7 +18,7 @@ export class SongPlayer {
     let audio = new AudioEnv();
 
     // Create a PlayNode representation of the SongTree.
-    let playTree : PlayNode | null = new PlayNode(song.root, null);
+    let playTree : PlayNode | null = new PlayNode(song.root);
 
     // Traverse the tree repeatedly.
     let interval = setInterval(() : void => {
