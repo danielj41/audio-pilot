@@ -5,24 +5,58 @@ import { SongTransformationStack }
 import { AudioEnv, AudioNodeChain } from '../../src/audio-tree'
 import * as TypeMoq from 'typemoq'
 
+type ScheduleParams = {
+  start: number,
+  end: number,
+  steps: number
+};
+
 /**
  * Return a SongNode object that returns a mocked no-op AudioNodeChain object.
  */
-export function getSongNodeMock(songNode: NoteSongNode | null = null) :
+export function getSongNodeMock(songNode: NoteSongNode | null = null,
+ audioNodeChainMock: TypeMoq.IMock<AudioNodeChain> | null = null) :
  NoteSongNode {
+
+  let chainMock = audioNodeChainMock || getAudioNodeChainMock();
+
+  songNode = songNode || new NoteSongNode(new SongTransformationCollection(0));
+  songNode.getAudioNodeChain = () => chainMock.object;
+
+  return songNode;
+}
+
+/**
+ * Create a AudioNodeChain object that treats `schedule()` as a no-op. If
+ * If specified, the mock will verify that AudioNodeChain's `schedule` gets
+ * called with the right parameters and called the right number of times. To
+ * do this, the caller must call `verifyAll()` on the mock at the end of the
+ * test.
+ */
+export function getAudioNodeChainMock(
+ paramsList: ScheduleParams[] | null = null) : TypeMoq.IMock<AudioNodeChain> {
   let audioNodeChainMock: TypeMoq.IMock<AudioNodeChain> =
    TypeMoq.Mock.ofInstance(new AudioNodeChain(<any>1));
 
-  audioNodeChainMock.setup(x => x.schedule(TypeMoq.It.isAny(),
-                                           TypeMoq.It.isAny(),
-                                           TypeMoq.It.isAny(),
-                                           TypeMoq.It.isAny(),
-                                           TypeMoq.It.isAny()));
+  if (paramsList !== null) {
+    paramsList.forEach((params) => {
+      audioNodeChainMock.setup(x => x.schedule(
+       TypeMoq.It.isAny(),
+       TypeMoq.It.isValue(params.start),
+       TypeMoq.It.isValue(params.end),
+       TypeMoq.It.isValue(params.steps),
+       TypeMoq.It.isAny())).verifiable(TypeMoq.Times.once());
+    });
+  } else {
+    audioNodeChainMock.setup(x => x.schedule(
+     TypeMoq.It.isAny(),
+     TypeMoq.It.isAny(),
+     TypeMoq.It.isAny(),
+     TypeMoq.It.isAny(),
+     TypeMoq.It.isAny()));
+  }
 
-  songNode = songNode || new NoteSongNode(new SongTransformationCollection(0));
-  songNode.getAudioNodeChain = () => audioNodeChainMock.object;
-
-  return songNode;
+  return audioNodeChainMock;
 }
 
 /**

@@ -4,6 +4,8 @@ import { SongTransformationStack } from './song-transformation-stack'
 import { AudioEnv } from '../audio-tree'
 import { PlayNode } from './play-node'
 
+export { PlayNode } from './play-node'
+
 /**
  * Plays a song defined by a SongTree.
  */
@@ -14,9 +16,13 @@ export class SongPlayer {
    */
   public traversePeriod: number = 10;
 
-  public playSong(song: SongTree) : void {
-    let audio = new AudioEnv();
+  private audio: AudioEnv;
 
+  public constructor(audio: AudioEnv | null = null) {
+    this.audio = audio || new AudioEnv();
+  }
+
+  public playSong(song: SongTree) : void {
     // Create a PlayNode representation of the SongTree.
     let playTree : PlayNode | null = new PlayNode(song.root);
 
@@ -25,7 +31,7 @@ export class SongPlayer {
       if (playTree !== null) {
         // `traverse` will return a new tree after deleting all nodes that have
         // already been played.
-        playTree = playTree.traverse(new SongTransformationStack(), audio);
+        playTree = this.playInterval(playTree);
       } else {
         // If it returns null, then there are no more nodes to play. That means
         // that the song must have ended.
@@ -33,5 +39,9 @@ export class SongPlayer {
         console.log('song ended!');
       }
     }, this.traversePeriod);
+  }
+
+  public playInterval(playTree : PlayNode) : PlayNode | null {
+    return playTree.traverse(new SongTransformationStack(), this.audio);
   }
 }
