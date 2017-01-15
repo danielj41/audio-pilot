@@ -8,6 +8,8 @@ import 'mocha'
 import { assert } from 'chai'
 import * as TypeMoq from 'typemoq'
 
+import { getSongNodeMock, getAudioMock } from './mocks'
+
 describe('PlayNode', () => {
   describe('traverse', () => {
     it('should return a new PlayNode tree', () => {
@@ -65,43 +67,3 @@ describe('PlayNode', () => {
     });
   })
 });
-
-/**
- * Return a SongNode object that returns a mocked no-op AudioNodeChain object.
- */
-function getSongNodeMock(songNode: NoteSongNode | null = null) : NoteSongNode {
-  let audioNodeChainMock: TypeMoq.IMock<AudioNodeChain> =
-   TypeMoq.Mock.ofInstance(new AudioNodeChain(<any>1));
-
-  audioNodeChainMock.setup(x => x.schedule(TypeMoq.It.isAny(),
-                                           TypeMoq.It.isAny(),
-                                           TypeMoq.It.isAny(),
-                                           TypeMoq.It.isAny(),
-                                           TypeMoq.It.isAny()));
-
-  songNode = songNode || new NoteSongNode(new SongTransformationCollection(0));
-  songNode.getAudioNodeChain = () => audioNodeChainMock.object;
-
-  return songNode;
-}
-
-/**
- * Returns a mocked Audio object that returns a sequence of booleans for
- * `shouldSchedule`. All other methods are no-ops.
- * Example:
- *   let a = getAudioMock([true, false]);
- *   a.shouldSchedule(0) // true
- *   a.shouldSchedule(0) // false
- */
-function getAudioMock(returnValues: boolean[]) : AudioEnv {
-  let audioMock: TypeMoq.IMock<AudioEnv> = TypeMoq.Mock.ofInstance(
-   new AudioEnv());
-
-  for (let i in returnValues) {
-    let value = returnValues[i];
-    audioMock.setup(x => x.shouldSchedule(TypeMoq.It.isAnyNumber()))
-             .returns(() => value);
-  }
-
-  return audioMock.object;
-}
