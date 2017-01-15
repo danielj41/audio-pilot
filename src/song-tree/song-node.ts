@@ -6,11 +6,8 @@ import { AudioNodeChain } from '../audio-tree'
  * Represents one node of a SongTree.
  */
 export abstract class SongNode {
-  children: SongNode[];
-
   constructor(public transformations: SongTransformationCollection,
-   public duration: Duration = 0) {
-    this.children = [];
+   public duration: Duration = 0, public children: SongNode[] = []) {
     // Durations are only meaningful for leaf nodes. Parent nodes infer their
     // durations from their children.
   }
@@ -28,4 +25,9 @@ export abstract class SongNode {
   addChild(songNode: SongNode) : void {
     this.children.push(songNode);
   }
+
+  /**
+   * A shallow-copy of SongNode.
+   */
+  abstract clone() : SongNode;
 }
