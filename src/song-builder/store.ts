@@ -1,13 +1,20 @@
-import { SongNode, SongTree }
+import { SongNode, SongTree, NoteSongNode, SongTransformationCollection }
  from '../song-tree'
 
 export type SongStore = {
-  songNodesStore: SongNodeStore[];
+  songNodesStore: SongNodesStore[];
 }
 
-export type SongNodeStore = {
+export type SongNodesStore = {
   parentId: number | null;
   songNode: SongNode;
+}
+
+export const initialStore: SongStore = {
+  songNodesStore: [{
+    parentId: null,
+    songNode: new NoteSongNode(new SongTransformationCollection(0))
+  }]
 }
 
 /**
