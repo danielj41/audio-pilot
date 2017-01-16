@@ -1,5 +1,5 @@
 import { createStore, Store } from 'redux'
-import { SongStore } from './store'
+import { SongStore, toSongTree } from './store'
 import { reducer } from './reducer'
 import { SongTree, NoteSongNode, SongTransformationCollection }
  from '../song-tree'
@@ -7,7 +7,7 @@ import { SongTree, NoteSongNode, SongTransformationCollection }
 export function generateSong2() : SongTree {
   let store: Store<SongStore> = createStore(reducer);
 
-  
+  return toSongTree(store.getState());
 }
 
 // stub for now.

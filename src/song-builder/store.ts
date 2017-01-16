@@ -2,17 +2,17 @@ import { SongNode, SongTree, NoteSongNode, SongTransformationCollection }
  from '../song-tree'
 
 export type SongStore = {
-  songNodesStore: SongNodesStore[];
+  songNodeStores: SongNodeStore[];
 }
 
-export type SongNodesStore = {
-  parentId: number | null;
+export type SongNodeStore = {
+  childrenIds: number[];
   songNode: SongNode;
 }
 
 export const initialStore: SongStore = {
-  songNodesStore: [{
-    parentId: null,
+  songNodeStores: [{
+    childrenIds: [],
     songNode: new NoteSongNode(new SongTransformationCollection(0))
   }]
 }
@@ -21,23 +21,19 @@ export const initialStore: SongStore = {
  * Transforms the flat redux-friendly SongStore into a SongTree.
  */
 export function toSongTree(store: SongStore) : SongTree {
-  let songNodesStore = store.songNodesStore;
+  let songNodeStores = store.songNodeStores;
 
-  songNodesStore = songNodesStore.map((store) => {
+  songNodeStores = songNodeStores.map((store) => {
+    let songNode = store.songNode.clone();
+
+    songNode.children = store.childrenIds.map(
+     (id) => songNodeStores[id].songNode);
+
     return {
       ...store,
-      songNode: store.songNode.clone()
+      songNode: songNode
     };
   });
 
-  songNodesStore.forEach((store, id) => {
-    if (store.parentId !== null) {
-      let parentSongNode = songNodesStore[store.parentId].songNode;
-
-      parentSongNode.children =
-       parentSongNode.children.concat([store.songNode]);
-    }
-  });
-
-  return new SongTree(songNodesStore[0].songNode);
+  return new SongTree(songNodeStores[0].songNode);
 }
