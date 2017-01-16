@@ -10,12 +10,10 @@ export type SongNodeStore = {
   songNode: SongNode;
 }
 
-export const initialStore: SongStore = {
-  songNodeStores: [{
-    childrenIds: [],
-    songNode: new NoteSongNode(new SongTransformationCollection(0))
-  }]
-}
+export const initialStore: SongNodeStore[] = [{
+  childrenIds: [],
+  songNode: new NoteSongNode(new SongTransformationCollection(0))
+}]
 
 /**
  * Transforms the flat redux-friendly SongStore into a SongTree.
@@ -26,14 +24,19 @@ export function toSongTree(store: SongStore) : SongTree {
   songNodeStores = songNodeStores.map((store) => {
     let songNode = store.songNode.clone();
 
-    songNode.children = store.childrenIds.map(
-     (id) => songNodeStores[id].songNode);
-
     return {
       ...store,
       songNode: songNode
     };
   });
 
+  songNodeStores = songNodeStores.map((store) => {
+    store.songNode.children = store.childrenIds.map(
+     (id) => songNodeStores[id].songNode);
+
+    return store;
+  });
+
+  console.log(songNodeStores[0].songNode);
   return new SongTree(songNodeStores[0].songNode);
 }

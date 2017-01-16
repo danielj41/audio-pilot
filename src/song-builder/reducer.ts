@@ -2,8 +2,8 @@ import { combineReducers } from 'redux'
 import { Action } from './action'
 import { SongStore, initialStore, SongNodeStore } from './store'
 
-export function songNodesReducer(state: SongNodeStore[], action: Action) :
- SongNodeStore[] {
+export function songNodesReducer(state: SongNodeStore[] = initialStore,
+ action: Action) : SongNodeStore[] {
   switch (action.type) {
     case 'ADD_NODE': {
       let newState: SongNodeStore[] = [...state, {
@@ -44,5 +44,5 @@ export function songNodesReducer(state: SongNodeStore[], action: Action) :
 }
 
 export const reducer = combineReducers<SongStore>({
-  songNodesStore: songNodesReducer
+  songNodeStores: songNodesReducer
 });

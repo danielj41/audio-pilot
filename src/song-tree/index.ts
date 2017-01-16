@@ -4,7 +4,7 @@ import { SongTransformationCollection } from './song-transformation-collection'
 export { SongNode } from './song-node'
 export { SongTransformationCollection } from './song-transformation-collection'
 export { Duration, Time, Velocity } from './time-transformation'
-export { Steps } from './steps-transformation'
+export { Steps, StepsPerStep } from './steps-transformation'
 export { NoteSongNode } from './note-song-node'
 
 export class SongTree {
