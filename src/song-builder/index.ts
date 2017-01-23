@@ -1,13 +1,12 @@
 import { createStore, Store } from 'redux'
-import { SongStore, toSongTree } from './store'
+import { SongState, toSongTree } from './state'
 import { reducer } from './reducer'
 import { addNode, duplicateNode, editNode } from './action'
 import { SongTree, NoteSongNode, SongTransformationCollection }
  from '../song-tree'
 
-
 export function generateSong() : SongTree {
-  let store: Store<SongStore> = createStore(reducer);
+  let store: Store<SongState> = createStore(reducer);
 
   store.dispatch(addNode(0));
 

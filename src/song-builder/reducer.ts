@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux'
 import { Action } from './action'
-import { SongStore, initialStore, SongNodeStore } from './store'
+import { SongState, initialSongNodeState, SongNodeState } from './state'
 
-export function songNodesReducer(state: SongNodeStore[] = initialStore,
- action: Action) : SongNodeStore[] {
+export function songNodesReducer(state: SongNodeState[] = initialSongNodeState,
+ action: Action) : SongNodeState[] {
   switch (action.type) {
     case 'ADD_NODE': {
-      let newState: SongNodeStore[] = [...state, {
+      let newState: SongNodeState[] = [...state, {
         childrenIds: new Array<number>(),
         songNode: action.songNode
       }];
@@ -17,7 +17,7 @@ export function songNodesReducer(state: SongNodeStore[] = initialStore,
       return newState;
     }
     case 'DUPLICATE_NODE': {
-      let newState: SongNodeStore[] = [...state, {
+      let newState: SongNodeState[] = [...state, {
         ...state[action.id]
       }];
       newState[action.parentId] = {
@@ -43,6 +43,6 @@ export function songNodesReducer(state: SongNodeStore[] = initialStore,
   return state;
 }
 
-export const reducer = combineReducers<SongStore>({
+export const reducer = combineReducers<SongState>({
   songNodeStores: songNodesReducer
 });
