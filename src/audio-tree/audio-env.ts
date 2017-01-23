@@ -36,4 +36,19 @@ export class AudioEnv {
   public shouldSchedule(start: Time) : boolean {
     return this.context.currentTime > start - this.scheduleAhead;
   }
+
+  /**
+   * Returns when an AudioNode should be disconnected, based on its scheduled
+   * end time. This doesn't need to be completely accurate, since the sound
+   * will stop at its scheduled `stop()` time, so add a buffer of
+   * this.scheduleAhead.
+   *
+   * Not entirely necessary, but this cleans up AudioNodes we won't ever use
+   * again.
+   *
+   * Returns a duration in ms to use in setTimeout.
+   */
+  public getDisconnectTimeoutDuration(end: Time) : number {
+    return (end + this.scheduleAhead - this.context.currentTime) * 1000;
+  }
 }

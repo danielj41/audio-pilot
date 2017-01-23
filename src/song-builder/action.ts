@@ -15,6 +15,10 @@ export type Action = {
   newTransformations: SongTransformationCollection
 };
 
+/**
+ * Creates an action that will create a blank SongNode, attaching it to
+ * parentId.
+ */
 export function addNode(parentId: number) : Action {
   return {
     type: 'ADD_NODE',
@@ -23,14 +27,21 @@ export function addNode(parentId: number) : Action {
   };
 }
 
+/**
+ * Creates an action that duplicates a SongNode, including a shallow copy
+ * of all its children.
+ */
 export function duplicateNode(id: number, parentId: number) : Action {
   return {
     type: 'DUPLICATE_NODE',
-    id,
+    id, // id of the node to duplicate.
     parentId
   };
 }
 
+/**
+ * Takes an existing node and modifies its transformations.
+ */
 export function editNode(id: number, time: Time, velocity: Velocity = 1,
  steps: Steps = 0, stepsPerStep: StepsPerStep = 1) {
   return {

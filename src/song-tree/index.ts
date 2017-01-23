@@ -1,3 +1,7 @@
+/**
+ * a song-tree is a data representation of a song, with different AudioNodes
+ * played over time.
+ */
 import { SongNode } from './song-node'
 import { SongTransformationCollection } from './song-transformation-collection'
 

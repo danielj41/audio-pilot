@@ -60,7 +60,7 @@ export class AudioNodeChain {
     setTimeout(() => {
       this.head.disconnect();
       console.log("disconnected node");
-    }, (end - this.head.context.currentTime) * 1000);
+    }, env.getDisconnectTimeoutDuration(end));
 
     // For any oscillators, set their frequency and schedule them to start and
     // stop.

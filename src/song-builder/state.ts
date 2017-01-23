@@ -10,6 +10,7 @@ export type SongNodeState = {
   songNode: SongNode;
 }
 
+// Start with one item with id 0, it will be the root SongNode.
 export const initialSongNodeState: SongNodeState[] = [{
   childrenIds: [],
   songNode: new NoteSongNode(new SongTransformationCollection(0))
@@ -18,9 +19,10 @@ export const initialSongNodeState: SongNodeState[] = [{
 /**
  * Transforms the flat redux-friendly SongState into a SongTree.
  */
-export function toSongTree(store: SongState) : SongTree {
-  let songNodeStates = store.songNodeStates;
+export function toSongTree(state: SongState) : SongTree {
+  let songNodeStates = state.songNodeStates;
 
+  // Clone all the SongNodes so we can mutate them within this function.
   songNodeStates = songNodeStates.map((state) => {
     let songNode = state.songNode.clone();
 
@@ -30,6 +32,7 @@ export function toSongTree(store: SongState) : SongTree {
     };
   });
 
+  // Get rid of the ids and actually fill in the `children` arrays.
   songNodeStates = songNodeStates.map((state) => {
     state.songNode.children = state.childrenIds.map(
      (id) => songNodeStates[id].songNode);

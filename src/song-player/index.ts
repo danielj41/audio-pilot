@@ -1,3 +1,6 @@
+/**
+ * song-player uses audio-tree to play a song-tree in the browser.
+ */
 import { SongTree, SongNode, SongTransformationCollection, Steps }
  from '../song-tree'
 import { SongTransformationStack } from './song-transformation-stack'
