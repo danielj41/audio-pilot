@@ -13,7 +13,7 @@ export type SongNodeState = {
 // Start with one item with id 0, it will be the root SongNode.
 export const initialSongNodeState: SongNodeState[] = [{
   childrenIds: [],
-  songNode: new NoteSongNode(new SongTransformationCollection(0))
+  songNode: new SongNode(new SongTransformationCollection(0))
 }];
 
 /**

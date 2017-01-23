@@ -22,6 +22,20 @@ export type Action = {
 export function addNode(parentId: number) : Action {
   return {
     type: 'ADD_NODE',
+    songNode: new SongNode(new SongTransformationCollection(0), 1),
+    parentId
+  };
+}
+
+/**
+ * Creates an action that will create a blank NoteSongNode, attaching it to
+ * parentId
+ *
+ * TODO: Figure out a way to make addNode more generic and accept a type.
+ */
+export function addNoteNode(parentId: number) : Action {
+  return {
+    type: 'ADD_NODE',
     songNode: new NoteSongNode(new SongTransformationCollection(0), 1),
     parentId
   };

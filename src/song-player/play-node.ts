@@ -80,7 +80,7 @@ export class PlayNode {
 
       // Also, check if any children need to be scheduled soon. Return the
       // new PlayNode with new children.
-      return newNode.traverseChildren(stack, audio);
+      return newNode.traverseChildren(stack, audio, parentAudioNodes);
     } else {
       // If we're not playing this node soon, then just return this part of the
       // tree without any modifications.
@@ -93,8 +93,8 @@ export class PlayNode {
    * play, return a new PlayNode with less children. Return null if this node
    * and all its children are done.
    */
-  private traverseChildren(stack: SongTransformationStack, audio: AudioEnv) :
-   PlayNode | null {
+  private traverseChildren(stack: SongTransformationStack, audio: AudioEnv,
+   parentAudioNodes: AudioNodeChain | null) : PlayNode | null {
     let newChildren: PlayNode[] = [];
 
     for (let i in this.children) {
@@ -107,7 +107,9 @@ export class PlayNode {
 
     if (newChildren.length > 0) {
       return new PlayNode(this.songNode, newChildren, this.duration,
-       this.audioNodes);
+       this.audioNodes || parentAudioNodes);
+      // SongNodes can have null AudioNodeChains, in that case, just pass
+      // on the parentAudioNodes.
     } else {
       return null;
     }
@@ -128,7 +130,10 @@ export class PlayNode {
      stack.getSlice('steps'));
 
     let audioNodes = this.songNode.getAudioNodeChain(audio.context);
-    audioNodes.schedule(audio, start, end, steps, parentAudioNodes);
+
+    if (audioNodes) {
+      audioNodes.schedule(audio, start, end, steps, parentAudioNodes);
+    }
 
     return new PlayNode(this.songNode, this.children, this.duration,
      audioNodes);
