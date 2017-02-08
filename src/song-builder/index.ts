@@ -4,16 +4,32 @@
 import { createStore, Store } from 'redux'
 import { SongState, toSongTree } from './state'
 import { reducer } from './reducer'
-import { addNode, addNoteNode, duplicateNode, editNode } from './action'
+import { Action, addNode, addNoteNode, duplicateNode, editNode } from './action'
 import { SongTree, NoteSongNode, SongTransformationCollection }
  from '../song-tree'
+
+export { SongState, toSongTree } from './state'
+export { addNode, addNoteNode, duplicateNode, editNode } from './action'
+
+export type SongStore = Store<SongState>;
+
+export function newStore() : SongStore {
+  let store: Store<SongState> = createStore(reducer);
+  return store;
+}
+
+export function randomAction(store: SongStore) : Action {
+  let length = store.getState().songNodeStates.length;
+  return duplicateNode(Math.floor(Math.random() * length),
+   Math.floor(Math.random() * length));
+}
 
 /**
  * Sample function for generating a SongTree. It's not very useful since it
  * only generates one song right now.
  */
-export function generateSong() : SongTree {
-  let store: Store<SongState> = createStore(reducer);
+export function generateSong() : SongStore {
+  let store = newStore();
 
   // This is intended to be fairly declarative syntax. That way, I can
   // randomly generate songs by picking random actions and parameters
@@ -27,5 +43,5 @@ export function generateSong() : SongTree {
   store.dispatch(duplicateNode(1, 0));
   store.dispatch(editNode(5, 3, 2, 6));
 
-  return toSongTree(store.getState());
+  return store;
 }

@@ -1,4 +1,4 @@
-import { generateSong } from '../src/song-builder'
+import { generateSong, toSongTree } from '../src/song-builder'
 import { SongPlayer } from '../src/song-player'
 
-(new SongPlayer()).playSong(generateSong());
+(new SongPlayer()).playSong(toSongTree(generateSong().getState()));
