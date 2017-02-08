@@ -20,8 +20,29 @@ export function newStore() : SongStore {
 
 export function randomAction(store: SongStore) : Action {
   let length = store.getState().songNodeStates.length;
-  return duplicateNode(Math.floor(Math.random() * length),
-   Math.floor(Math.random() * length));
+  let duplicateId = Math.floor(Math.random() * length);
+  let parentId = Math.floor(Math.random() * length);
+
+  // Check for any cycles that this could cause.
+  let ids = [duplicateId];
+  // Keep going down the tree until we have no children.
+  while (ids.length > 0) {
+    let newIds: number[] = [];
+
+    ids.forEach((id) => {
+      newIds.push.apply(newIds,
+       store.getState().songNodeStates[id].childrenIds);
+    });
+
+    ids = newIds;
+
+    if (ids.indexOf(parentId) !== -1) {
+      // If we run into our parent, then there's a cycle. Try again.
+      return randomAction(store);
+    }
+  }
+
+  return duplicateNode(duplicateId, parentId);
 }
 
 /**
