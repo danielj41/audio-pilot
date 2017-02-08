@@ -31,14 +31,29 @@ export class AudioEnv {
     }
   }
 
+  /**
+   * This resets the timer to 0 for restarting a song.
+   */
   public restartTime() {
+    // Store it as an offset from the audio context's time.
     this.startTime = this.context.currentTime;
   }
 
+  /**
+   * Get the current time in the song.
+   */
   public getCurrentTime() {
+    // Offset by the time that we started the song.
     return this.context.currentTime - this.startTime;
   }
 
+  /**
+   * Converts a time in a song to an absolute time that can be used with
+   * the audio context.
+   *
+   * TODO: It's probably better to abstract this somehow, so that users don't
+   *       need to write code like `oscillator.start(env.getTime(startTime))`.
+   */
   public getTime(time: Time) {
     return time + this.startTime;
   }
