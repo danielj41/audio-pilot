@@ -71,8 +71,8 @@ export class AudioNodeChain {
       let osc = this.oscillators[i];
 
       osc.frequency.value = frequency;
-      osc.start(start);
-      osc.stop(end);
+      osc.start(env.getTime(start));
+      osc.stop(env.getTime(end));
     }
 
     console.log("time: " + start + "-" + end + " @ " + frequency + " Hz");

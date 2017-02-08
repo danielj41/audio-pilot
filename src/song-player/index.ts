@@ -48,8 +48,8 @@ export class SongPlayer {
 
         if (loop) {
           // Reset the audio time and start over.
-          this.audio = new AudioEnv();
-          this.playSong(song);
+          this.audio.restartTime();
+          this.playSong(song, loop);
         }
       }
     }, this.traversePeriod);

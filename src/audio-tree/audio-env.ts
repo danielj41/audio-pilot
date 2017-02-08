@@ -23,10 +23,24 @@ export class AudioEnv {
    */
   public readonly scheduleAhead: number = 0.2;
 
+  private startTime: Time = 0;
+
   constructor() {
     if (typeof AudioContext !== 'undefined') {
       this.context = new AudioContext();
     }
+  }
+
+  public restartTime() {
+    this.startTime = this.context.currentTime;
+  }
+
+  public getCurrentTime() {
+    return this.context.currentTime - this.startTime;
+  }
+
+  public getTime(time: Time) {
+    return time + this.startTime;
   }
 
   /**
@@ -34,7 +48,7 @@ export class AudioEnv {
    * that node should get scheduled to play soon.
    */
   public shouldSchedule(start: Time) : boolean {
-    return this.context.currentTime > start - this.scheduleAhead;
+    return this.getCurrentTime() > start - this.scheduleAhead;
   }
 
   /**
@@ -49,6 +63,6 @@ export class AudioEnv {
    * Returns a duration in ms to use in setTimeout.
    */
   public getDisconnectTimeoutDuration(end: Time) : number {
-    return (end + this.scheduleAhead - this.context.currentTime) * 1000;
+    return (end + this.scheduleAhead - this.getCurrentTime()) * 1000;
   }
 }
