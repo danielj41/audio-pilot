@@ -32,13 +32,15 @@ export function initializeUI() : void {
     } else if (ev.key === DISLIKE_KEY) {
       network.propagate(0);
       store.dispatch(ActionCreators.undo());
+      store.dispatch(ActionCreators.undo());
+      store.dispatch(ActionCreators.undo());
       changeSong(store, network, 0.5, 5);
     } else if (ev.key === UNDO_KEY) {
       store.dispatch(ActionCreators.undo());
     } else if (ev.key === REDO_KEY) {
       store.dispatch(ActionCreators.redo());
     } else if (ev.key === FILL_KEY) {
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 5; i++) {
         changeSong(store, network, 0.7, 10);
       }
     }
@@ -49,17 +51,30 @@ export function initializeUI() : void {
 
 function changeSong(store: SongStore, network: Network,
  minResult: number, maxTries: number) : void {
-  let actionVector = new ActionInputVector(store);
+  let actionVectors: ActionInputVector[] = [];
+
   let result = -1;
 
   while (result < minResult && maxTries--) {
-    actionVector = new ActionInputVector(store);
-    result = network.activate(actionVector);
+    actionVectors = [
+      new ActionInputVector(store),
+      new ActionInputVector(store),
+      new ActionInputVector(store)
+    ];
+
+    let input = actionVectors.reduce((prev: number[], actionVector) => {
+      return [...prev, ...actionVector.toArray()];
+    }, []);
+
+    result = network.activate(input);
+    console.log('Estimated score ' + maxTries +': ' + result);
   }
 
-  console.log('Estimated score: ' + result);
 
-  store.dispatch(actionVector.toAction());
+
+  actionVectors.forEach((actionVector) => {
+    store.dispatch(actionVector.toAction());
+  });
 }
 
 function playSong(player: SongPlayer, store: SongStore): void {

@@ -5,11 +5,10 @@ export class Network {
   private network: Synaptic.Architect.Perceptron;
 
   constructor() {
-    this.network = new Synaptic.Architect.Perceptron(7, 10, 10, 1);
+    this.network = new Synaptic.Architect.Perceptron(21, 5, 5, 1);
   }
 
-  activate(vector: ActionInputVector) : number {
-    let input = vector.toArray();
+  activate(input: number[]) : number {
     let output = this.network.activate(input);
     return output[0];
   }
