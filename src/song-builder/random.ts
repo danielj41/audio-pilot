@@ -1,14 +1,19 @@
 import { SongStore } from './state'
-import { Action, duplicateNode } from './action'
+import { Action, duplicateNode, addNode, addNoteNode, editNode } from './action'
 
 /**
- * Sample function for duplicating a random node. It's not too useful right now,
- * but at some point, I want to make this an AI that chooses actions.
+ * Creates a random Action.
  */
 export function randomAction(store: SongStore) : Action {
-  let length = store.getState().songNodeStates.length;
-  let duplicateId = Math.floor(Math.random() * length);
-  let parentId = Math.floor(Math.random() * length);
+  return randomDuplicateNode(store);
+}
+
+/**
+ * Duplicate a random node.
+ */
+function randomDuplicateNode(store: SongStore) : Action {
+  let duplicateId = randomNodeId(store);
+  let parentId = randomNodeId(store);
 
   // Check for any cycles that this could cause.
   let ids = [duplicateId];
@@ -25,9 +30,29 @@ export function randomAction(store: SongStore) : Action {
 
     if (ids.indexOf(parentId) !== -1) {
       // If we run into our parent, then there's a cycle. Try again.
-      return randomAction(store);
+      return randomDuplicateNode(store);
     }
   }
 
   return duplicateNode(duplicateId, parentId);
+}
+
+function randomAddNode(store: SongStore) : Action {
+  return addNode(randomNodeId(store));
+}
+
+function randomAddNoteNode(store: SongStore) : Action {
+  return addNoteNode(randomNodeId(store));
+}
+
+function randomEditNode(store: SongStore) : Action {
+  return editNode(randomNodeId(store), Math.random(), Math.random(),
+   Math.random(), Math.random());
+}
+
+/**
+ * Returns a random Node id that exists in the store.
+ */
+function randomNodeId(store: SongStore) : number {
+  return Math.floor(Math.random() * store.getState().songNodeStates.length);
 }

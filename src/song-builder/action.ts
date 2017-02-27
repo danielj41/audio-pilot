@@ -57,7 +57,7 @@ export function duplicateNode(id: number, parentId: number) : Action {
  * Takes an existing node and modifies its transformations.
  */
 export function editNode(id: number, time: Time, velocity: Velocity = 1,
- steps: Steps = 0, stepsPerStep: StepsPerStep = 1) {
+ steps: Steps = 0, stepsPerStep: StepsPerStep = 1) : Action {
   return {
     type: 'EDIT_NODE',
     id,
