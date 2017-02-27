@@ -1,9 +1,12 @@
+import { Store } from 'redux'
 import { SongNode, SongTree, NoteSongNode, SongTransformationCollection }
  from '../song-tree'
 
 export type SongState = {
   songNodeStates: SongNodeState[];
 }
+
+export type SongStore = Store<SongState>;
 
 export type SongNodeState = {
   childrenIds: number[];
