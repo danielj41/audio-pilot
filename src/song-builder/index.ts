@@ -9,7 +9,6 @@ import { SongTree, NoteSongNode, SongTransformationCollection }
  from '../song-tree'
 
 export { SongState, toSongTree } from './state'
-export { addNode, addNoteNode, duplicateNode, editNode } from './action'
 export { SongStore } from './state'
 export { ActionInputVector } from './random'
 
@@ -17,8 +16,7 @@ export { ActionInputVector } from './random'
  * Creates a new Redux store for a song.
  */
 export function newStore() : SongStore {
-  let store: Store<SongState> = createStore(reducer);
-  return store;
+  return createStore(reducer);
 }
 
 /**

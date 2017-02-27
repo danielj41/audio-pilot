@@ -1,9 +1,10 @@
 import { Store } from 'redux'
 import { SongNode, SongTree, NoteSongNode, SongTransformationCollection }
  from '../song-tree'
+import { UndoableState } from 'redux-undo'
 
 export type SongState = {
-  songNodeStates: SongNodeState[];
+  songNodeStates: UndoableState<SongNodeState[]>;
 }
 
 export type SongStore = Store<SongState>;
@@ -23,7 +24,7 @@ export const initialSongNodeState: SongNodeState[] = [{
  * Transforms the flat redux-friendly SongState into a SongTree.
  */
 export function toSongTree(state: SongState) : SongTree {
-  let songNodeStates = state.songNodeStates;
+  let songNodeStates = state.songNodeStates.present;
 
   // Clone all the SongNodes so we can mutate them within this function.
   songNodeStates = songNodeStates.map((state) => {

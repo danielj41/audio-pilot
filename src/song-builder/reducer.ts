@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 import { Action } from './action'
 import { SongState, initialSongNodeState, SongNodeState } from './state'
+import undoable from 'redux-undo'
 
 export function songNodesReducer(state: SongNodeState[] = initialSongNodeState,
  action: Action) : SongNodeState[] {
@@ -62,5 +63,7 @@ export function songNodesReducer(state: SongNodeState[] = initialSongNodeState,
 }
 
 export const reducer = combineReducers<SongState>({
-  songNodeStates: songNodesReducer
+  songNodeStates: undoable(songNodesReducer, {
+    limit: 10
+  })
 });

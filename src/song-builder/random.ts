@@ -65,7 +65,7 @@ function safeDuplicateNode(store: SongStore, duplicateId : number,
 
     ids.forEach((id) => {
       newIds.push.apply(newIds,
-       store.getState().songNodeStates[id].childrenIds);
+       store.getState().songNodeStates.present[id].childrenIds);
     });
 
     ids = newIds;
@@ -88,5 +88,5 @@ function randomInt(minInclusive : number, maxExclusive : number) {
  * Returns a random Node id that exists in the store.
  */
 function randomNodeId(store: SongStore) : number {
-  return randomInt(0, store.getState().songNodeStates.length);
+  return randomInt(0, store.getState().songNodeStates.present.length);
 }

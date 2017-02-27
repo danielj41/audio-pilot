@@ -5,9 +5,12 @@
 import { generateSong, ActionInputVector, toSongTree, SongStore }
  from '../song-builder'
 import { SongPlayer } from '../song-player'
+import { ActionCreators } from 'redux-undo'
 
 const LIKE_KEY = ' '; // Space bar
 const DISLIKE_KEY = 'x'; // x keyboard key
+const UNDO_KEY = 'u';
+const REDO_KEY = 'r';
 
 export function initializeUI() : void {
   let store = generateSong();
@@ -23,11 +26,16 @@ export function initializeUI() : void {
     //       song changes in the future.
     if (ev.key === LIKE_KEY) {
       changeSong(store);
-      playSong(player, store);
     } else if (ev.key === DISLIKE_KEY) {
       changeSong(store);
-      playSong(player, store);
+    } else if (ev.key === UNDO_KEY) {
+      store.dispatch(ActionCreators.undo());
+    } else if (ev.key === REDO_KEY) {
+      store.dispatch(ActionCreators.redo());
     }
+    console.log(store.getState());
+
+    playSong(player, store);
   });
 }
 
