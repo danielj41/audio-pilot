@@ -14,8 +14,6 @@ export class ActionInputVector {
   }
 
   private setRandomInputs(store: SongStore) {
-    let inputs : number[] = [];
-
     this.actionTypeInputs[0] = randomInt(0, 4);
     this.nodeIdInputs[0] = randomNodeId(store);
     this.nodeIdInputs[1] = randomNodeId(store);
@@ -25,7 +23,7 @@ export class ActionInputVector {
     this.transformInputs[3] = randomInt(1, 3);
   }
 
-  public toVector(): number[] {
+  public toArray(): number[] {
     return [
       ...this.actionTypeInputs,
       ...this.nodeIdInputs,

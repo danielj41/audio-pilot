@@ -6,41 +6,60 @@ import { generateSong, ActionInputVector, toSongTree, SongStore }
  from '../song-builder'
 import { SongPlayer } from '../song-player'
 import { ActionCreators } from 'redux-undo'
+import { Network } from '../action-learn'
 
 const LIKE_KEY = ' '; // Space bar
 const DISLIKE_KEY = 'x'; // x keyboard key
 const UNDO_KEY = 'u';
 const REDO_KEY = 'r';
+const FILL_KEY = 'f';
 
 export function initializeUI() : void {
   let store = generateSong();
+
   let player = new SongPlayer();
+  let network = new Network();
+
+  changeSong(store, network, 0, 1);
   playSong(player, store);
 
   window.addEventListener('keypress', function(ev) {
     // The user liked or disliked the song. Change the song and play the new
     // version.
-    //
-    // TODO: It should do something different depending on whether the user
-    //       likes it or not. If they dislike it, we should avoid doing similar
-    //       song changes in the future.
     if (ev.key === LIKE_KEY) {
-      changeSong(store);
+      network.propagate(1);
+      changeSong(store, network, 0.3, 3);
     } else if (ev.key === DISLIKE_KEY) {
-      changeSong(store);
+      network.propagate(0);
+      store.dispatch(ActionCreators.undo());
+      changeSong(store, network, 0.5, 5);
     } else if (ev.key === UNDO_KEY) {
       store.dispatch(ActionCreators.undo());
     } else if (ev.key === REDO_KEY) {
       store.dispatch(ActionCreators.redo());
+    } else if (ev.key === FILL_KEY) {
+      for (let i = 0; i < 10; i++) {
+        changeSong(store, network, 0.7, 10);
+      }
     }
-    console.log(store.getState());
 
     playSong(player, store);
   });
 }
 
-function changeSong(store: SongStore): void {
-  store.dispatch((new ActionInputVector(store)).toAction());
+function changeSong(store: SongStore, network: Network,
+ minResult: number, maxTries: number) : void {
+  let actionVector = new ActionInputVector(store);
+  let result = -1;
+
+  while (result < minResult && maxTries--) {
+    actionVector = new ActionInputVector(store);
+    result = network.activate(actionVector);
+  }
+
+  console.log('Estimated score: ' + result);
+
+  store.dispatch(actionVector.toAction());
 }
 
 function playSong(player: SongPlayer, store: SongStore): void {

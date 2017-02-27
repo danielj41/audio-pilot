@@ -59,7 +59,7 @@ export class AudioNodeChain {
     // play the sounds.
     setTimeout(() => {
       this.head.disconnect();
-      console.log("disconnected node");
+      //console.log("disconnected node");
     }, env.getDisconnectTimeoutDuration(end));
 
     // For any oscillators, set their frequency and schedule them to start and
@@ -75,6 +75,6 @@ export class AudioNodeChain {
       osc.stop(env.getTime(end));
     }
 
-    console.log("time: " + start + "-" + end + " @ " + frequency + " Hz");
+    //console.log("time: " + start + "-" + end + " @ " + frequency + " Hz");
   }
 }
