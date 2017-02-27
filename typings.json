@@ -2,8 +2,5 @@
   "globalDependencies": {
     "chai": "registry:dt/chai#3.4.0+20160926213833",
     "mocha": "registry:dt/mocha#2.2.5+20161221010438"
-  },
-  "dependencies": {
-    "synaptic": "registry:dt/synaptic#1.0.8+20161110161159"
   }
 }
