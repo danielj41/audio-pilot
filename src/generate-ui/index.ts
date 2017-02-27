@@ -2,7 +2,7 @@
  * Creates a simple web browser UI for liking/disliking a song. This will cause
  * the song to change accordingly.
  */
-import { generateSong, randomAction, toSongTree, SongStore }
+import { generateSong, ActionInputVector, toSongTree, SongStore }
  from '../song-builder'
 import { SongPlayer } from '../song-player'
 
@@ -32,7 +32,7 @@ export function initializeUI() : void {
 }
 
 function changeSong(store: SongStore): void {
-  store.dispatch(randomAction(store));
+  store.dispatch((new ActionInputVector(store)).toAction());
 }
 
 function playSong(player: SongPlayer, store: SongStore): void {
